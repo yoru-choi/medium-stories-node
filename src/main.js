@@ -1,10 +1,16 @@
 var medium = require('medium-sdk')
 
+
+const mediumToken = "asdfasdfsadfsadf"
+
 var client = new medium.MediumClient({
-  clientId: 'YOUR_CLIENT_ID',
+  clientId: 'clientId',
   clientSecret: 'YOUR_CLIENT_SECRET'
 })
 
+YOUR_AUTHORIZATION_CODE
+clientId
+clientSecret
 var redirectURL = 'https://yoursite.com/callback/medium'; 
 
 const mode = "secretState"
@@ -15,13 +21,15 @@ var url = client.getAuthorizationUrl(mode, redirectURL, [
 
 // (Send the user to the authorization URL to obtain an authorization code.)
 
+const htmlContent = "markdownToHtml"
+
 client.exchangeAuthorizationCode('YOUR_AUTHORIZATION_CODE', redirectURL, function (err, token) {
   client.getUser(function (err, user) {
     client.createPost({
       userId: user.id,
       title: 'A new post',
       contentFormat: medium.PostContentFormat.HTML,
-      content: '<h1>A New Post</h1><p>This is my new post.</p>',
+      content: htmlContent,
       publishStatus: medium.PostPublishStatus.DRAFT
     }, function (err, post) {
       console.log(token, user, post)

@@ -1,5 +1,10 @@
 {
+  "scripts": {
+    "test":"node src/test.js"
+  },
   "dependencies": {
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
     "medium-sdk": "^0.0.4"
   }
 }
