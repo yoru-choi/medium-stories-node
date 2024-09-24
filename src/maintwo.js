@@ -2,15 +2,19 @@ const axios = require('axios'); // Axios는 HTTP 요청을 쉽게 보내기 위�
 const dotenv = require("dotenv").config();
 const fs = require("fs")
 
- // Integration Token을 사용하여 API 요청을 보낼 때 필요한 토큰
-const integrationToken = process.env.MEDIUM_TOKEN
+ // Integration Token을 사용하여 API 요청을 보낼 때 필요한 토큰 미디엄 토큰은 내 개인 저장소에 별도관리하면서 env로 빼다 쓰자
+const integrationToken = process.env.TEST_MEDIUM_TOKEN
 // Medium에서 제공하는 API 기본 URL
 const mediumApiBaseUrl = 'https://api.medium.com/v1';
 
 // 게시할 글의 HTML 내용
 var htmlContent = ""
 
-fs.readFile('src/the_little_prince_summary.md', 'utf8', (err, data) => {
+
+const fileName = "the_little_prince_summary.md"
+const path = `stories/${fileName}`
+
+fs.readFile(path, 'utf8', (err, data) => {
   if (err) {
       console.error('Error reading the file:', err);
       return;
@@ -46,10 +50,11 @@ const publishStatus =     'draft' // 발행 상태: 'draft', 'public', 'unlisted
     const postResponse = await axios.post(
       `${mediumApiBaseUrl}/users/${userId}/posts`,
       {
-        title: 'A New Post Using Integration Token',
-        contentFormat: 'html', // Content 포맷: html 또는 markdown
+        title: 'A New Post Using Integration Token3',
+        contentFormat: 'markdown', // Content 포맷: html 또는 markdown
         content: htmlContent,
-        publishStatus: publishStatus
+        publishStatus: publishStatus,
+        tags:["qqq", "www"]
       },
       {
         headers: {
