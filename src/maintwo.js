@@ -1,5 +1,6 @@
 const axios = require('axios'); // Axios는 HTTP 요청을 쉽게 보내기 위한 라이브러리입니다.
 const dotenv = require("dotenv").config();
+const fs = require("fs")
 
  // Integration Token을 사용하여 API 요청을 보낼 때 필요한 토큰
 const integrationToken = process.env.MEDIUM_TOKEN
@@ -9,13 +10,13 @@ const mediumApiBaseUrl = 'https://api.medium.com/v1';
 // 게시할 글의 HTML 내용
 var htmlContent = ""
 
-fs.readFile('the_little_prince_summary.md', 'utf8', (err, data) => {
+fs.readFile('src/the_little_prince_summary.md', 'utf8', (err, data) => {
   if (err) {
       console.error('Error reading the file:', err);
       return;
   }
   
-  const htmlContent = data;
+  htmlContent = data; // 상위 스코프의 변수에 할당
 
   // 이제 htmlContent를 사용하여 Medium API에 게시할 수 있습니다.
   console.log(htmlContent);
