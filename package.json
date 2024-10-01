@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test":"node src/maintwo.js"
+    "test": "node src/main.js"
   },
   "dependencies": {
     "axios": "^1.7.7",
