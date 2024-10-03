@@ -11,6 +11,7 @@ google 의 Blogger도 사용하기 불편했다
 
 ## 오랜만에 vscode
 
+typescript , vscode에서 처음부터 할수있게끔 합시다
 vscode를 실행해준다 fromat on save는 없으면 추가해준다
 
 패키지는 아래처럼 3개 설치하면된다
@@ -21,7 +22,28 @@ typescript를 깔자
 
 medium sdk는 medium 공식 git에서 찾을수있다.
 
+import 해야하는것들
+npx tsc --init 로 tsc롤 초기화 시킨다
+
+npm i -g typescript //ts 사용위해 이걸 했지만 안됬다
+npm i --save-dev ts-node typescript
+
+npm i --save-dev @types/node //ts 내장모듈 사용하기위해
+
+axios는 지원해준다
+
+npm install @types/dotenv --save-dev
+
+"axios": "^1.7.7",
+"dotenv": "^16.4.5",
+"medium-sdk": "^0.0.4"
+
+이 3개 install 해야합니다
+
 https://github.com/Medium/medium-api-docs
 "axios": "^1.7.7",
 "dotenv": "^16.4.5",
 "medium-sdk": "^0.0.4"
+
+실행도 ts-node로 바꿔줍니다
+npm i -D tsx
