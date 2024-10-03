@@ -23,7 +23,10 @@ const getMarkdownPost = async (postFolderName: string): Promise<string> => {
   return await fs.readFile(path, "utf8");
 };
 
-async function getPost(generateConfig: GenerateConfig): Promise<void> {
+async function getPost(
+  userId: string,
+  generateConfig: GenerateConfig
+): Promise<void> {
   try {
     const postConfig: PostConfig = await import(
       `../stories/${generateConfig.postFolderName}/config.ts`
@@ -32,7 +35,7 @@ async function getPost(generateConfig: GenerateConfig): Promise<void> {
     });
 
     const response: AxiosResponse = await axios.get(
-      `${mediumApiBaseUrl}/posts/${postConfig.postId}`,
+      `${mediumApiBaseUrl}/users/${userId}/publications`,
       {
         headers: {
           Authorization: `Bearer ${generateConfig.mediumToken}`,
@@ -87,6 +90,7 @@ async function createPost(
 }
 
 async function updatePost(
+  userId: string,
   markdownPost: string,
   generateConfig: GenerateConfig
 ): Promise<void> {
@@ -99,7 +103,7 @@ async function updatePost(
 
     // 글 게시 API 호출
     const response: AxiosResponse = await axios.put(
-      `${mediumApiBaseUrl}/posts/${postConfig.postId}`,
+      `${mediumApiBaseUrl}/users/${userId}/posts/${postConfig.postId}`,
       {
         title: postConfig.title,
         contentFormat: "markdown", // Content 포맷: html 또는 markdown
@@ -124,7 +128,8 @@ async function updatePost(
 }
 
 export const getMediumPost = async (generateConfig: GenerateConfig) => {
-  await getPost(generateConfig);
+  const userId = await getMediumUserId(generateConfig.mediumToken);
+  await getPost(userId, generateConfig);
 };
 
 export const createMediumPost = async (generateConfig: GenerateConfig) => {
@@ -134,6 +139,7 @@ export const createMediumPost = async (generateConfig: GenerateConfig) => {
 };
 
 export const updateMediumPost = async (generateConfig: GenerateConfig) => {
+  const userId = await getMediumUserId(generateConfig.mediumToken);
   const markdownPost = await getMarkdownPost(generateConfig.postFolderName);
-  await updatePost(markdownPost, generateConfig);
+  await updatePost(userId, markdownPost, generateConfig);
 };
