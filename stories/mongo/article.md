@@ -1,16 +1,17 @@
 ![Description](https://img.notionusercontent.com/s3/prod-files-secure%2F6ab3efe6-44b5-4e5c-9d86-56543fb7f59d%2Fc3b86c80-eaba-4a31-971d-868a2b179849%2Ftest2.jpg/size/w=1420?exp=1727749267&sig=VX63E66yaxZvLTyfE2Db1fyK5g_lgajo6O10Oikoyq0)
 
-<!-- pre image 설정해야하나 위처럼 -->
+<!-- pre image는 있는게 예쁘다-->
 
 ## What is the mongoDb
 
-mongodb는 nosql db로 문서지향모델을 사용하여 json형식으로 데이터를 저장합니다 
+mongodb는 nosql db로 문서지향모델을 사용하여 json형식으로 데이터를 저장합니다 sdfㅇ
 유연한 스키마를 제공하기때문에 데이터의 구조변경이 쉽고
 자동샤딩을 통해 높은성능과 대용량 데이터 처리에 용이합니다
 
 ## mongoTemplate, mongoRepository 란
 
-mongo를 사용할때 주로 사용되는 2가지 방법입니다
+sdf
+mongo를 사용할때 주로 사용되는 2가지 방법입니다asdfasfdsdfsadfsdfasdfsdf
 
 ### MongoRepository
 
@@ -142,3 +143,24 @@ interface BookingRepository :  MongoRepository<AppCollaborator, ObjectId>, Booki
 저부분 이외에는 대체적으로 sequelize나 DjangoOrm처럼 사용할수있었기때문에 만족한다
 
 만약 다른 더좋은 방법을 제시해줄수있는 사람이 있다면 댓글 바란다.
+
+    ) {
+    init {
+        // 프로퍼티 이름을 문자열로 정의
+        val nameCheck = "organizationCollaborator"
+        nameCheck.to
+        // 변수 이름 비교
+        if (::organizationCollaborator.name != nameCheck) {
+            throw IllegalArgumentException("변수 이름이 일치하지 않습니다.")
+        }
+    }
+
+}
+
+위처럼 init넣고 문자열 비교하면 체크는 되지만 개애바다 , 선언붕에서 선언과 동시에 name은 끌어올수없다 kotlin에서 서포트하지안흔ㄴ다고 한다
+camelcase 를 사용하기 위해서는
+
+object MongoCollectionCamel {
+const val ORGANIZATION_COLLABORATOR = "organizationCollaborator"
+const val APP_COLLABORATOR = "appCollaborator"
+} 이런 코드를 만들었지만 차라리 함수를 만들어서 사용할때마다 camel을 적용하는게 훨신깔끔하다

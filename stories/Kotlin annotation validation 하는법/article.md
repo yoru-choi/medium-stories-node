@@ -1,8 +1,6 @@
-![Description](https://img.notionusercontent.com/s3/prod-files-secure%2F6ab3efe6-44b5-4e5c-9d86-56543fb7f59d%2Fc3b86c80-eaba-4a31-971d-868a2b179849%2Ftest2.jpg/size/w=1420?exp=1727749267&sig=VX63E66yaxZvLTyfE2Db1fyK5g_lgajo6O10Oikoyq0)
-
-<!-- pre image 설정해야하나 위처럼 -->
-
 ## What is the mongoDb
+
+가독성 좋은 에러 관리법
 
 kotlin에서 에러 컨트롤 하는법
 
@@ -46,7 +44,6 @@ hivernate validator가 작동해야하는데 없다고한다
 
 아래와같은 비슷하게 생긴의존성이 젯브레인에서 제공하지만
 유효성검사를 하지않는 껍데기이다. 직접 validation코드를 작성하지않는이상 유효성검사를 자동으로 하진않는다
-\
 
 kotlin에서는 타입을 적어 작성하기때문에 어노테이션으로 널이면 안된다는걸 적을 이유가 없는데 왜존재한는지 모르겠다.
 그저 내가 헷갈려서 그럴수도있지만 내경우엔 불필요한 코드였다
@@ -61,6 +58,8 @@ import org.jetbrains.annotations.NotNull
 
 정상적으로 동작하는것을 확인했다 휴
 3개중 하나라도 없으면 annotation class에서 에러가 나오니까 하나도 뺄수없다
+
+```kotlin
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [IsObjectIdHandler::class])
@@ -69,13 +68,17 @@ val message: String = "is not objectId from mongo",
 val groups: Array<KClass<\*>> = [],
 val payload: Array<KClass<out Payload>> = []
 )
+```
 
 그리고 아래처럼 코드를 만들면 payload가 맞는지 아닌지 boolean을 리턴하는 형식이다나는 아래에서 커스텀 exceptionhanler를 적용에서 글로벌에서 캐치하고싶었지만 그것은 불가능했다
+
+```kotlin
 class IsObjectIdHandler : ConstraintValidator<ObjectIdOnly, String> {
 override fun isValid(payload: String, p1: ConstraintValidatorContext?): Boolean {
 return ObjectId.isValid(payload)
 }
 }
+```
 
 annotation을 핸들링할때 에러를 일으키면 false일경우 정해져있는 에러인 
 ConstraintViolationException class의 에러를 발생시키지만 
@@ -84,7 +87,9 @@ throw CoustomException을 해버릴경우 거기서의 exception처리 자체가
 그래서 ConstraintViolationException를 globalExceptionHandler에 적용시켰고 description에서 controller에서 원하는 값이 오지않은경우의
 errorCode를 작성후 description을 var로 변경하여 
 필요시에 설명의 접미 부분에 key, value 값을 추가할수있게끔 하였다
-아래과 같이 코드가 나왔으며 핸들링이 가능해졌고 원하는 코드만 리턴할수있는 글로벌 핸들러를 만들었다 
+아래과 같이 코드가 나왔으며 핸들링이 가능해졌고 원하는 코드만 리턴할수있는 글로벌 핸들러를 만들었다
+
+```kotlin
 @ExceptionHandler(ConstraintViolationException::class)
 fun test(
 request: HttpServletRequest,
@@ -101,6 +106,7 @@ ex,
 ErrorCodes.VALIDATION_ERROR
 )
 }
+```
 
 기본의 ExceptionHandler를 최하단에 두지않으면 기존 핸들러가 먼저 동작할수있는부분을 유의하자
 위와같이 하면 annotation Exception Handler설정이 문제없이 동작한다
