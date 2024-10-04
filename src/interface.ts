@@ -1,7 +1,7 @@
 export interface GenerateConfig {
-  mediumToken: string;
-  postFolderName: string;
-  pushType: "get" | "create" | "update"; // create 또는 update
+  accessToken: string;
+  directoryName: string;
+  actionType: "get" | "create" | "update"; // get, create (not exist update, delete api)
   publishStatus: "draft" | "public" | "unlisted"; // 발행 상태
 }
 

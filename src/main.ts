@@ -6,19 +6,29 @@ dotenv.config();
 
 // mediumToken: process.env.PROD_MEDIUM_TOKEN!, //set token
 const generateConfig: GenerateConfig = {
-  mediumToken: process.env.TEST_MEDIUM_TOKEN!, //set token
-  postFolderName:
+  accessToken: process.env.TEST_MEDIUM_TOKEN!, //set token
+  directoryName:
     "Handling Multipart Form-Data and JSON Body Simultaneously in a Single API Request with Swagger", //select post
-  pushType: "update", // what to do
+  actionType: "update", // what to do
   publishStatus: "draft", // how to set post
 };
 
-if (generateConfig.pushType === "get") {
-  getMediumPost(generateConfig);
-} else if (generateConfig.pushType === "create") {
-  createMediumPost(generateConfig);
-  // } else if (generateConfig.pushType === "update") {
-  //   updateMediumPost(generateConfig);
-} else {
-  console.log("nothing run");
+switch (generateConfig.actionType) {
+  case "get":
+    getMediumPost(generateConfig);
+    break;
+  case "create":
+    createMediumPost(generateConfig);
+    break;
+  case "update":
+    console.log(
+      [
+        "You would create a post in Markdown format.",
+        "Then, check the content of the post created on Medium and copy it.",
+        "After that, paste it into the post you want to edit.",
+      ].join("\n")
+    );
+    break;
+  default:
+    console.log("nothing run");
 }

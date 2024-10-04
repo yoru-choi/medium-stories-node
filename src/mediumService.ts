@@ -18,8 +18,8 @@ const getMediumUserId = async (token: String): Promise<string> => {
   return userResponse.data.data.id;
 };
 
-const getMarkdownPost = async (postFolderName: string): Promise<string> => {
-  const path = `stories/${postFolderName}/article.md`;
+const getMarkdownPost = async (directoryName: string): Promise<string> => {
+  const path = `stories/${directoryName}/post.md`;
   return await fs.readFile(path, "utf8");
 };
 
@@ -28,17 +28,11 @@ async function getPost(
   generateConfig: GenerateConfig
 ): Promise<void> {
   try {
-    const postConfig: PostConfig = await import(
-      `../stories/${generateConfig.postFolderName}/config.ts`
-    ).then((data) => {
-      return data.default;
-    });
-
     const response: AxiosResponse = await axios.get(
       `${mediumApiBaseUrl}/users/${userId}/publications`,
       {
         headers: {
-          Authorization: `Bearer ${generateConfig.mediumToken}`,
+          Authorization: `Bearer ${generateConfig.accessToken}`,
           "Content-Type": "application/json",
         },
       }
@@ -58,8 +52,9 @@ async function createPost(
   generateConfig: GenerateConfig
 ): Promise<void> {
   try {
+    const contentFormat: string = "markdown";
     const postConfig: PostConfig = await import(
-      `../stories/${generateConfig.postFolderName}/config.ts`
+      `../stories/${generateConfig.directoryName}/config.ts`
     ).then((data) => {
       return data.default;
     });
@@ -68,14 +63,14 @@ async function createPost(
       `${mediumApiBaseUrl}/users/${userId}/posts`,
       {
         title: postConfig.title,
-        contentFormat: "markdown", // Content 포맷: html 또는 markdown
+        contentFormat: contentFormat,
         content: markdownPost,
         publishStatus: generateConfig.publishStatus,
         tags: postConfig.tags,
       },
       {
         headers: {
-          Authorization: `Bearer ${generateConfig.mediumToken}`,
+          Authorization: `Bearer ${generateConfig.accessToken}`,
           "Content-Type": "application/json",
         },
       }
@@ -89,57 +84,64 @@ async function createPost(
   }
 }
 
-async function updatePost(
-  userId: string,
-  markdownPost: string,
-  generateConfig: GenerateConfig
-): Promise<void> {
-  try {
-    const postConfig: PostConfig = await import(
-      `../stories/${generateConfig.postFolderName}/config.ts`
-    ).then((data) => {
-      return data.default;
-    });
-
-    // 글 게시 API 호출
-    const response: AxiosResponse = await axios.put(
-      `${mediumApiBaseUrl}/users/${userId}/posts/${postConfig.postId}`,
-      {
-        title: postConfig.title,
-        contentFormat: "markdown", // Content 포맷: html 또는 markdown
-        content: markdownPost,
-        publishStatus: generateConfig.publishStatus,
-        tags: postConfig.tags,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${generateConfig.mediumToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    console.log("Post updated successfully:", response.data);
-  } catch (err: any) {
-    console.error(
-      "Error updating post:",
-      err.response ? err.response.data : err.message
-    );
-  }
-}
-
 export const getMediumPost = async (generateConfig: GenerateConfig) => {
-  const userId = await getMediumUserId(generateConfig.mediumToken);
+  const userId = await getMediumUserId(generateConfig.accessToken);
   await getPost(userId, generateConfig);
 };
 
 export const createMediumPost = async (generateConfig: GenerateConfig) => {
-  const userId = await getMediumUserId(generateConfig.mediumToken);
-  const markdownPost = await getMarkdownPost(generateConfig.postFolderName);
+  const userId = await getMediumUserId(generateConfig.accessToken);
+  const markdownPost = await getMarkdownPost(generateConfig.directoryName);
   await createPost(userId, markdownPost, generateConfig);
 };
 
-export const updateMediumPost = async (generateConfig: GenerateConfig) => {
-  const userId = await getMediumUserId(generateConfig.mediumToken);
-  const markdownPost = await getMarkdownPost(generateConfig.postFolderName);
-  await updatePost(userId, markdownPost, generateConfig);
-};
+// export const updateMediumPost = async (generateConfig: GenerateConfig) => {
+//   const userId = await getMediumUserId(generateConfig.accessToken);
+//   const markdownPost = await getMarkdownPost(generateConfig.directoryName);
+//   await updatePost(userId, markdownPost, generateConfig);
+// };
+
+// async function updatePost(
+//   userId: string,
+//   markdownPost: string,
+//   generateConfig: GenerateConfig
+// ): Promise<void> {
+//   try {
+//     const postConfig: PostConfig = await import(
+//       `../stories/${generateConfig.directoryName}/config.ts`
+//     ).then((data) => {
+//       return data.default;
+//     });
+
+//     // 글 게시 API 호출
+//     const response: AxiosResponse = await axios.put(
+//       `${mediumApiBaseUrl}/users/${userId}/posts/${postConfig.postId}`,
+//       {
+//         title: postConfig.title,
+//         contentFormat: "markdown", // Content 포맷: html 또는 markdown
+//         content: markdownPost,
+//         publishStatus: generateConfig.publishStatus,
+//         tags: postConfig.tags,
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${generateConfig.accessToken}`,
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+//     console.log("Post updated successfully:", response.data);
+//   } catch (err: any) {
+//     console.error(
+//       "Error updating post:",
+//       err.response ? err.response.data : err.message
+//     );
+//   }
+// }
+
+// const postConfig: PostConfig = await import(
+//   `../stories/${generateConfig.directoryName}/config.ts`
+// ).then((data) => {
+//   return data.default;
+// });
+//  `${mediumApiBaseUrl}/users/${userId}/posts/${postId}`,
