@@ -1,56 +1,32 @@
-## What is the mongoDb
+# Error handleing pracice in kotlin
 
-가독성 좋은 에러 관리법
+# Error Handling Best Practices in Kotlin
 
-kotlin에서 에러 컨트롤 하는법
+## 1. Common Error Code for Throwing Errors
 
-throw를 할 공통 에러 코드를 만든다
-에러 처리용 annotation을 만든다
+In Kotlin, error handling is an essential part of writing clean and maintainable code. Here’s a basic approach to manage errors effectively:
 
-공통 에러 처리 모듈에 throw를 한다
+- **Define common error codes**: Create reusable error codes to maintain consistency when throwing exceptions.
+- **Create custom error handling annotations**: Implement custom annotations that can be used for error handling.
+- **Throw errors in a common error handling module**: Centralize your error handling logic in a common module that can be reused across different parts of your application.
 
-위에 해당되지않는 부분
+## 2. Handling Edge Cases
 
-1. token fillter 할때 아직 내부가 아니라서 에러 핸들러 작동이 안될경우
-2. 의도하지 않은 에러가 나타났을때 의 처리
+There are certain scenarios where the error handling mechanism might not work as expected. For instance:
 
-Kotlin annotation validation 하는법
-하는법
-kotlin으로 annotation validation을 하려고한다 
-ㅈㄴ 안된다 이런저런 방법을 찾아보고 있다
-많은걸 시도해도 안됬다 결과는 정해졌다
+- **Token filtering before entering the internal system**: If token filtering occurs before the error handler is initialized, the handler might not function properly.
+- **Handling unexpected errors**: How to handle errors that occur unexpectedly but are not part of the normal error flow.
 
-class최상단에 
-import org.springframework.validation.annotation.Validated
-컨트롤러단에서 어노테이션 벨리데이션 할경우 이거 무조건넣어야한다
-requestBody에서 하려면 그 앞단에 붙여줘야하는듯 하다 
-@RequestBody @Validated requestBody: CreateOrganizationRequestBodyDto
+## Kotlin Annotation Validation
 
-위와 비교하면 class의 선언부 같은 느낌인데 requestBody쪽은 왜 저기 선언하는 지는 알수없다
-역할: 클래스 수준의 @Validated는 주로 @Valid 또는 @Validated 어노테이션이 붙은 메서드 파라미터의 유효성 검사를 지원하기 위해 사용됩니다. 또한, 클래스 내에서 AOP(Aspect-Oriented Programming) 기능과 함께 사용되어 특정 유효성 검사 그룹을 활성화할 때도 사용됩니다.
-한계: 클래스 최상단에 선언된 @Validated는 클래스 내의 모든 메서드에 대한 전역적인 유효성 검사 기능을 활성화하지만, 각 메서드 파라미터의 유효성 검사에는 영향을 주지 않습니다. 이는 메서드 파라미터에 대한 유효성 검사를 자동으로 활성화하지 않기 때문에, 메서드 파라미터에 별도로 @Validated 또는 @Valid를 붙여야 합니다.
+### How to Validate Annotations in Kotlin
 
-아래의 의존성을 추가하지않으면 안된다 
-내경우에는
-// have to annotation validation
-implementation("org.springframework.boot:spring-boot-starter-validation:3.3.2")
+I’ve been trying to implement annotation validation in Kotlin, but it didn’t work as expected. Despite many attempts and methods, I’ve reached a conclusion.
 
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.Valid
-위의 코드들이 기본적으로 추가가 가능했기때문에 해당의존성을 추가할 필요가 없다고 판단하고 이런 저런 시도를 했지만 불가능했다
-결론적으로는 위의 validation의 존성은 필수였다 이유를 찾아보았다
-위의 의존성을 추가하지않으면 존재하는 하지만 구현하지않는다고 나와있다
-hivernate validator가 작동해야하는데 없다고한다
-
-아래와같은 비슷하게 생긴의존성이 젯브레인에서 제공하지만
-유효성검사를 하지않는 껍데기이다. 직접 validation코드를 작성하지않는이상 유효성검사를 자동으로 하진않는다
-
-kotlin에서는 타입을 적어 작성하기때문에 어노테이션으로 널이면 안된다는걸 적을 이유가 없는데 왜존재한는지 모르겠다.
-그저 내가 헷갈려서 그럴수도있지만 내경우엔 불필요한 코드였다
-내가 모르는 부분이 있고 저게 의미있는 의존성이라면 코멘트 바란다
-import org.jetbrains.annotations.NotNull
-
-나는 dto로도 하고싶지만 직접도 설정하고싶었다
+- **Add `@Validated` at the class level**: This is necessary to trigger validation in controllers that use annotation-based validation.
+  ```kotlin
+  import org.springframework.validation.annotation.Validated
+  ```
 
 아래와 같은 방식으로 설정이 가능했다
 이경우 custom annotation의 설정은 field가아닌 VALUE_PARAMETER로 사용하면 문제가 없었다

@@ -95,6 +95,33 @@ export const createMediumPost = async (generateConfig: GenerateConfig) => {
   await createPost(userId, markdownPost, generateConfig);
 };
 
+//
+// const emphasizedPost = emphasizeWords(markdownPost);
+// const emphasizeWords = (markdown: string): string => {
+//   const wordsToEmphasize = ["npm", "github", "medium"];
+
+//   // 코드 블록을 구분하기 위해 줄 단위로 텍스트를 분리
+//   const lines = markdown.split("\n");
+
+//   return lines
+//     .map((line) => {
+//       // 코드 블럭 내부인지 확인
+//       if (line.startsWith("```")) {
+//         return line; // 코드 블럭은 그대로 반환
+//       }
+
+//       // 코드 블럭이 아닌 경우, 단어를 강조 처리
+//       wordsToEmphasize.forEach((word) => {
+//         if (line.includes(word)) {
+//           line = line.replace(word, `**${word}**`);
+//         }
+//       });
+
+//       return line;
+//     })
+//     .join("\n");
+// };
+
 // export const updateMediumPost = async (generateConfig: GenerateConfig) => {
 //   const userId = await getMediumUserId(generateConfig.accessToken);
 //   const markdownPost = await getMarkdownPost(generateConfig.directoryName);

@@ -7,9 +7,8 @@ dotenv.config();
 // mediumToken: process.env.PROD_MEDIUM_TOKEN!, //set token
 const generateConfig: GenerateConfig = {
   accessToken: process.env.TEST_MEDIUM_TOKEN!, //set token
-  directoryName:
-    "Handling Multipart Form-Data and JSON Body Simultaneously in a Single API Request with Swagger", //select post
-  actionType: "update", // what to do
+  directoryName: "How to manage Medium posts in Git as Markdown files", //select post
+  actionType: "create", // what to do
   publishStatus: "draft", // how to set post
 };
 
