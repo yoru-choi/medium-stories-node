@@ -1,23 +1,23 @@
 import dotenv from "dotenv";
-import { GenerateConfig } from "./interface";
+import { PostCreationConfig } from "./interface";
 import { getMediumPost, createMediumPost } from "./mediumService";
 
 dotenv.config();
 
 // mediumToken: process.env.PROD_MEDIUM_TOKEN!, TEST_MEDIUM_TOKEN
-const generateConfig: GenerateConfig = {
+const postCreationConfig: PostCreationConfig = {
   accessToken: process.env.TEST_MEDIUM_TOKEN!, //set token
   directoryName: "How to manage Medium posts in Git as Markdown files", //select post
   actionType: "create", // what to do
   publishStatus: "draft", // how to set post
 };
 
-switch (generateConfig.actionType) {
+switch (postCreationConfig.actionType) {
   case "get":
-    getMediumPost(generateConfig);
+    getMediumPost(postCreationConfig);
     break;
   case "create":
-    createMediumPost(generateConfig);
+    createMediumPost(postCreationConfig);
     break;
   case "update":
     console.log(

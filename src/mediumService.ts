@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { promises as fs } from "fs";
-import { GenerateConfig, PostConfig } from "./interface";
+import { PostCreationConfig, PostConfig } from "./interface";
 
 const mediumApiBaseUrl: string = "https://api.medium.com/v1";
 
@@ -25,7 +25,7 @@ const getMarkdownPost = async (directoryName: string): Promise<string> => {
 
 async function getPost(
   userId: string,
-  generateConfig: GenerateConfig
+  generateConfig: PostCreationConfig
 ): Promise<void> {
   try {
     const response: AxiosResponse = await axios.get(
@@ -49,7 +49,7 @@ async function getPost(
 async function createPost(
   userId: string,
   markdownPost: string,
-  generateConfig: GenerateConfig
+  generateConfig: PostCreationConfig
 ): Promise<void> {
   try {
     const contentFormat: string = "markdown";
@@ -84,12 +84,12 @@ async function createPost(
   }
 }
 
-export const getMediumPost = async (generateConfig: GenerateConfig) => {
+export const getMediumPost = async (generateConfig: PostCreationConfig) => {
   const userId = await getMediumUserId(generateConfig.accessToken);
   await getPost(userId, generateConfig);
 };
 
-export const createMediumPost = async (generateConfig: GenerateConfig) => {
+export const createMediumPost = async (generateConfig: PostCreationConfig) => {
   const userId = await getMediumUserId(generateConfig.accessToken);
   const markdownPost = await getMarkdownPost(generateConfig.directoryName);
   await createPost(userId, markdownPost, generateConfig);

@@ -1,8 +1,8 @@
-export interface GenerateConfig {
+export interface PostCreationConfig {
   accessToken: string;
   directoryName: string;
   actionType: "get" | "create" | "update"; // get, create (not exist update, delete api)
-  publishStatus: "draft" | "public" | "unlisted"; // 발행 상태
+  publishStatus: "draft" | "public" | "unlisted";
 }
 
 export interface PostConfig {
