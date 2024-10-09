@@ -4,7 +4,7 @@ import { getMediumPost, createMediumPost } from "./mediumService";
 
 dotenv.config();
 
-// mediumToken: process.env.PROD_MEDIUM_TOKEN!, //set token
+// mediumToken: process.env.PROD_MEDIUM_TOKEN!, TEST_MEDIUM_TOKEN
 const generateConfig: GenerateConfig = {
   accessToken: process.env.TEST_MEDIUM_TOKEN!, //set token
   directoryName: "How to manage Medium posts in Git as Markdown files", //select post

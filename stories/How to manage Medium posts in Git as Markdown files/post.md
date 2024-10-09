@@ -6,7 +6,7 @@ For a simple and lightweight setup, I thought **Node.js** would be a great fit. 
 
 **Tech Stack**
 
-- Node.js v20.xx
+- Node.js v22.9.0
 - TypeScript
 - VSCode
 - Git
@@ -16,6 +16,7 @@ For a simple and lightweight setup, I thought **Node.js** would be a great fit. 
 
 1. **Notion Setup**  
    First, I set up a **Notion** account to store images (though you can use a different service if you prefer).
+   If you use Notion, you need to set it to publish mode for the image address to have no expiration.
 2. **Create Git Repository**  
    Then, I created a new Git repository to keep everything version-controlled.
 3. **Configure VSCode**  
@@ -28,9 +29,9 @@ For a simple and lightweight setup, I thought **Node.js** would be a great fit. 
 **VSCode Extension**
 
 I was trying to automatically add syntax highlighting for things like Node, Npm, Typescript and so on.
-There are too many keywords required.I want to manage the post files as complete versions.So, what I found as a compromise was a VSCode extension.
+There are too many keywords required. I wanted to manage the post files more easily.
+So, what I found as a compromise was a VSCode extension.
 There’s an extension called 'Markdown All in One', and getting familiar with it seems like it will improve efficiency moving forward.
-Once all your work is done, try organizing and publishing your post in Markdown. In my previous tech blog, I wrote it directly, but writing it this way in Markdown feels more 'developer-like' and cool, so I decided to go with it.
 
 **Running Commands with Bash**
 
@@ -79,7 +80,7 @@ Additionally, I set up the JSON configuration and modified the script to run it 
 
 ## Let's Start
 
-![NotionImage](https://img.notionusercontent.com/s3/prod-files-secure%2F6ab3efe6-44b5-4e5c-9d86-56543fb7f59d%2Fb3fd5609-9abd-401f-ac06-f649e63940e1%2Fimage.png/size/w=2000?exp=1728020105&sig=3VS1Sb0fxrRsGYHJs6MWHAitmkji6hIPxHm9sRJ30mc)
+![NotionImage](https://qlqjs674.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F6ab3efe6-44b5-4e5c-9d86-56543fb7f59d%2Fb3fd5609-9abd-401f-ac06-f649e63940e1%2Fimage.png?table=block&id=115930ff-582f-80b9-997b-dfaa46fa3cc8&spaceId=6ab3efe6-44b5-4e5c-9d86-56543fb7f59d&width=710&userId=&cache=v2)
 
 I'll create the folder and file structure as shown above. There will be two folders: `src` and `stories`.
 
@@ -95,16 +96,12 @@ For better readability, I make the title and folder name the same.
 
 The `articleId` is a variable that stores the ID returned when the article is created. After creating the article, I assign this value to the `articleId` variable.  
 The `title` refers to the article's title, and `tags` are the article's associated tags.
-
 Here, the **title** is the most important piece of information.  
 You can store images on a free blogging platform and reference them in your Markdown.  
-I plan to use **Notion**, set to "private" so that only I can access it. This way, I can manage the storage in **Git** while still using images in my Markdown.
+I plan to use **Notion**. This way, I can manage the storage in **Git** while still using images in my Markdown.
+I thought about another way, so instead of creating a separate account for storing images, I prefer to manage everything with a single account.
 
-I thought it would be inconvenient to create a separate post just for images on **Medium**, so instead of creating a separate account for storing images, I prefer to manage everything with a single account.
-
-In the main code, I use the folder name from `stories` to fetch the necessary information.
-
-In other words, the **title** acts as both the article's title and the ID used to retrieve and post the article on the blog. It’s also used to reference the image in the blog from the Markdown.
+In other words, **title** serves as the ID used for the page title of motion, which stores the title of the article and the Git folder name and image.
 
 Here’s how I set it up:
 
@@ -121,20 +118,18 @@ Now that we've covered the `stories` part, let's move on to the execution part i
 
 There are three main sections: `main`, `interface`, and `mediumService`. Let's begin by taking a look at the `interface`.
 
-### GenerateConfig
+**GenerateConfig**
 
 1. **accessToken**: Medium token
-   - Your Medium API token for authentication.
+   Your Medium API token for authentication.
 2. **directoryName**:
-   - The name of the directory, typically used to link the article or content.
+   The name of the directory, typically used to link the article or content.
 3. **actionType**:
-
-   - The type of action (e.g., "create", "update", etc.) to be performed on the article or content.
-
+   The type of action (e.g., "create", "update", etc.) to be performed on the article or content.
 4. **publishStatus**:
-   - The publish status of the article (e.g., "draft", "published").
+   The publish status of the article (e.g., "draft", "published").
 
-"I’ve also created an interface to manage the publishing status and kept the values set in the article as an interface. This is the interface to be used when calling the config. The reason I didn’t use it directly from the config is that I wanted to minimize the code in the sections responsible for setting up and publishing the article, to improve readability."
+I’ve also created an interface to manage the publishing status and kept the values set in the article as an interface. This is the interface to be used when calling the config. The reason I didn’t use it directly from the config is that I wanted to minimize the code in the sections responsible for setting up and publishing the article, to improve readability.
 
 Let me know if you'd like further adjustments!
 
@@ -142,8 +137,8 @@ Let me know if you'd like further adjustments!
 export interface GenerateConfig {
   accessToken: string;
   directoryName: string;
-  actionType: "get" | "create" | "update"; // get, create (not exist update, delete api)
-  publishStatus: "draft" | "public" | "unlisted"; // 발행 상태
+  actionType: "get" | "create"; // get, create (not exist update, delete api)
+  publishStatus: "draft" | "public" | "unlisted";
 }
 
 export interface ArticleConfig {
@@ -188,7 +183,7 @@ const getMediumUserId = async (token: String): Promise<string> => {
     `${mediumApiBaseUrl}/me`,
     {
       headers: {
-        Authorization: `Bearer ${token}`, // Integration Token을 Authorization 헤더에 추가
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     }
@@ -224,8 +219,7 @@ async function getArticle(
 }
 ```
 
-"For creation, we first set the directoryName as shown below, and then call it as is."
-
+For creation, we first set the directoryName as shown below, and then call it as is.
 If you need more context or details added, feel free to let me know!
 
 ```typescript
@@ -235,7 +229,7 @@ const getMarkdownArticle = async (directoryName: string): Promise<string> => {
 };
 ```
 
-"You can output the read information as shown below."
+You can output the read information as shown below.
 
 ```typescript
 async function createArticle(
@@ -250,7 +244,7 @@ async function createArticle(
     ).then((data) => {
       return data.default;
     });
-    // 글 게시 API 호출
+    //
     const response: AxiosResponse = await axios.post(
       `${mediumApiBaseUrl}/users/${userId}/articles`,
       {
@@ -277,14 +271,20 @@ async function createArticle(
 }
 ```
 
-Feedback is always welcome."
+**Why I Blog**
 
-### Git Repository
+1. To have a reference for myself later.
+2. To share knowledge in an easily understandable way.
 
-[My repository](h)
+There are several ways to make information easier to understand, but one challenge is that code highlighting doesn’t work natively on Medium. If I replace code with images, it becomes difficult to copy, and embedding something like **GitHub Gist** or **CodePen** makes the posting process more tedious. So, if code highlighting is necessary, readers can directly check the Git repository.
 
-### Reference
+Once everything is ready, try organizing and publishing your post in Markdown. In my previous tech blog, I used to write directly on the platform, but using Markdown feels more 'developer-like' and professional, so I decided to stick with it.
 
+Feedback is always welcome.
+
+**Git Repository**
+[Medium Git Repository](https://github.com/yoru-choi/medium-stories-node/tree/dev)
+[This Post Git Repository](https://github.com/yoru-choi/medium-stories-node/blob/dev/stories/How%20to%20manage%20Medium%20posts%20in%20Git%20as%20Markdown%20files/post.md)
+**Reference**
 [Medium SDK for Node.js](https://github.com/Medium/medium-sdk-nodejs)
 [Medium API Docs](https://github.com/Medium/medium-api-docs)
-[ChatGPT](https://chatgpt.com)

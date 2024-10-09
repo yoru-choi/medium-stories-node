@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios"; // Axios는 HTTP 요청을 보내기 위한 라이브러리입니다.
+import axios, { AxiosResponse } from "axios";
 import { promises as fs } from "fs";
 import { GenerateConfig, PostConfig } from "./interface";
 
@@ -10,7 +10,7 @@ const getMediumUserId = async (token: String): Promise<string> => {
     `${mediumApiBaseUrl}/me`,
     {
       headers: {
-        Authorization: `Bearer ${token}`, // Integration Token을 Authorization 헤더에 추가
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     }

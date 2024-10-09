@@ -4,14 +4,22 @@
 
 ## What is the mongoDb
 
-동시성 제어 필요성
-리드하고 조회수 계속올리기때문에 
-100회정도 연속으로하면 concurency가 깨질거같다
-이에대해 mongodb에서의 처리법을 고민해보면
-OCC (optimistic concurrency control)
-PCC (pessimistic concurrency control)
+젠킨스 배포설정
 
-위의 두가지 방향성이 있다
+젠킨스를 install 할 linux를 준비한다
 
-몽고디비에서는 아래의 방식으로 사용가능하여 진행하였다
-db.collection.findAndModify
+manager 프로그램으로 install을 하면
+gui가 보인다
+
+젠킨스 로그인과 유저 계정을 생성한다
+
+모든화면을 로그인하면 기본적인상태가 나온다
+
+거기서 프리스타일로 jenkins를 만든다
+
+cicd 만 할거기때문에 대부분의 설정은 프리스타일로 진행한다
+
+github권한을 설정하고
+
+프로젝트에서 aws config가 필요할경우 해당 linux에서 미리 aws confiugre을 설정한다
+aws configure은 aws에서 pem.key를 설정한다.
