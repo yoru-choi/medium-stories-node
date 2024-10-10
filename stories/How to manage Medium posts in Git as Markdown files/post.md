@@ -4,7 +4,7 @@ I wanted to create a tech blog that I can manage with **Markdown** and **GitHub*
 I’ve been considering **Medium** because it supports **Markdown** and is one of the most popular blogging platforms, which makes it an appealing choice.
 For a simple and lightweight setup, I thought **Node.js** would be a great fit. Plus, it offers an official SDK (**medium-sdk-nodejs**), which seemed like the best option for my needs.
 
-If you want to view the source code comfortably, please refer to the Git repository at the bottom.
+If you want to view the source code comfortably, please refer to the Git repository at the bottom of the page.
 
 **Tech Stack**
 
@@ -17,14 +17,15 @@ If you want to view the source code comfortably, please refer to the Git reposit
 ## Setting Up the Project
 
 1. **Notion Setup**  
-   First, I set up a **Notion** account to store images (though you can use a different service if you prefer).
-   If you use Notion, you need to set it to publish mode for the image address to have no expiration.
+   First, I set up a Notion account to store images.
+   You need to set it to publish mode to ensure that the image links do not expire.
+   Additionally, make sure to use the image addresses from the view site, not from your logged-in Notion account.
 2. **Create Git Repository**  
    Then, I created a new Git repository to keep everything version-controlled.
 3. **Configure VSCode**  
    Next, I opened VSCode and configured a few basic settings, such as enabling "Format on Save" for a smoother workflow.
 4. **VSCode Extension**  
-   Next, install extension **Markdown All in One**
+   Next, install the **Markdown All in One** extension, which helps with document creation using shortcuts.
 5. **Running Commands with Bash**  
    Finally, I ran the necessary commands using **Bash**.
 
@@ -45,7 +46,8 @@ npm i -D typescript
 
 **TypeScript Setup**
 
-I wrote and executed the code in TypeScript, so I also installed the necessary dependencies. To run the code directly from the terminal, I needed to install `tsx` globally.
+I wrote and executed the code in TypeScript, so I also installed the necessary dependencies.
+To run the code directly from the terminal, I needed to install `tsx` globally.
 Additionally, I set up the JSON configuration and modified the script to run it using the `npm run dev` command.
 
 ```json
@@ -75,6 +77,10 @@ Additionally, I set up the JSON configuration and modified the script to run it 
 
 ## Let's Start
 
+![NotionImage](https://qlqjs674.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F6ab3efe6-44b5-4e5c-9d86-56543fb7f59d%2F3418b9be-911a-41f2-a2fc-faf472dd3371%2Fimage.png?table=block&id=11a930ff-582f-8022-9e77-f75410ec09d3&spaceId=6ab3efe6-44b5-4e5c-9d86-56543fb7f59d&width=700&userId=&cache=v2)
+
+**The URL for creating an integration token for a Medium blog**: [MediumSecurityUrl](https://medium.com/me/settings/security)
+
 ![NotionImage](https://qlqjs674.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F6ab3efe6-44b5-4e5c-9d86-56543fb7f59d%2Fb3fd5609-9abd-401f-ac06-f649e63940e1%2Fimage.png?table=block&id=115930ff-582f-80b9-997b-dfaa46fa3cc8&spaceId=6ab3efe6-44b5-4e5c-9d86-56543fb7f59d&width=710&userId=&cache=v2)
 
 I'll create the folder and file structure as shown above. There will be two folders: `src` and `stories`.
@@ -82,22 +88,20 @@ I'll create the folder and file structure as shown above. There will be two fold
 - `src` folder will be used for posting articles.
 - `stories` folder will be used to store and manage all the articles.
 
-First, I'll explain the `stories` part, as it’s the simpler of the two.
+First, I'll explain the stories part
 
-## What is Stories?
+## Stories Part
 
 I use the folder name as an ID to link `src` and `stories`.
-For better readability, I make the title and folder name the same.
+For better findability, I make the title and folder name the same..
 
-`stories`의 에는 기사 폴더가 존재합니다
-폴더명은 해당 기사의 타이틀이됩니다. 이 글같은 경우라면 **How to Manage Medium Posts in Git as Markdown Files** 가 폴더명이됩니다
+In the `stories` directory, there is a folder for each article. The folder name is the title of the article. For this article, the folder name would be **How to Manage Medium Posts in Git as Markdown Files**.
+Inside the folder, there are two files: `config.ts` and `post.md`.
 
-해당폴더에는 config.ts 와 post.md가 존재합니다
+- `config.ts` is where you define the settings necessary for the article.
+- `post.md` is where you write the article in markdown format for posting.
 
-post.md는 말그대로 posting하기위한 기사를 markdown형태로 적는 부분입니다
-
-config.ts는 해당 기사에 필요한 설정을 적는부분입니다
-아래의 샘플을 보면됩니다
+You can refer to the sample below for more details.
 
 ```typescript
 const articleId = "";
@@ -111,49 +115,34 @@ I may not use it often, but I'll keep it as a variable for now, as I don't know 
 `title` refers to the article's title.
 `tags` are the article's associated tags.
 
-Here, the **title** is the most important piece of information.  
-**title** serves as the ID used for the page title of motion, which stores the title of the article and the Git folder name and image.
-
-Here’s how I set it up:
+**Title** is an ID that checks the relationship between `src` and the `stories`.
+It is also used as the title for the Notion page where images are uploaded.
 
 Now that we've covered the `stories` part, let's move on to the execution part in `src`.
 
-## Execution in `src`
+## Src Part
 
-There are three main sections: `main`, `interface`, and `mediumService`. Let's begin by taking a look at the `interface`.
+There are three main sections: `main`, `interface`, and `mediumService`.
+Let's begin by taking a look at the `interface`.
+
+**Interface**
 
 ```typescript
 export interface PostCreationConfig {
-  accessToken: string;
-  directoryName: string;
-  actionType: "get" | "create" | "update"; // get, create (not exist update, delete api)
-  publishStatus: "draft" | "public" | "unlisted";
+  accessToken: string; // Notion integration token
+  folderName: string; // Title of the post
+  actionType: "get" | "create" | "update"; // Action type: get, create (no update or delete API available)
+  publishStatus: "draft" | "public" | "unlisted"; // Publish status from Medium
 }
 
 export interface PostConfig {
-  postId?: string;
-  title: string;
-  tags: string[];
+  postId?: string; // Medium article ID when using the medium-node-sdk to post
+  title: string; // Title of the post
+  tags: string[]; // Tags associated with the post
 }
 ```
 
-**GenerateConfig**
-
-![NotionImage](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F6ab3efe6-44b5-4e5c-9d86-56543fb7f59d%2F3418b9be-911a-41f2-a2fc-faf472dd3371%2Fimage.png?table=block&id=11a930ff-582f-8022-9e77-f75410ec09d3&spaceId=6ab3efe6-44b5-4e5c-9d86-56543fb7f59d&width=2000&userId=c7474aaa-446e-46cd-bbd3-ca986b15b2d8&cache=v2)
-
-1. **accessToken**: Medium token
-   Your Medium API token for authentication.
-   [Medium Integration Token](https://medium.com/me/settings/security)
-2. **directoryName**:
-   The name of the directory, typically used to link the article or content.
-3. **actionType**:
-   The type of action (e.g., "get", "create", etc.) to be performed on the article or content.
-4. **publishStatus**:
-   The publish status of the article (e.g., "draft", "published").
-
-I’ve also created an interface to manage the publishing status and kept the values set in the article as an interface. This is the interface to be used when calling the config. The reason I didn’t use it directly from the config is that I wanted to minimize the code in the sections responsible for setting up and publishing the article, to improve readability.
-
-Let me know if you'd like further adjustments!
+**Main**
 
 ```typescript
 import dotenv from "dotenv";
@@ -162,12 +151,12 @@ import { getMediumPost, createMediumPost } from "./mediumService";
 
 dotenv.config();
 
-// mediumToken: process.env.PROD_MEDIUM_TOKEN!, TEST_MEDIUM_TOKEN
+// You only need to modify the postCreationConfig when deploying, and then deploy.
 const postCreationConfig: PostCreationConfig = {
-  accessToken: process.env.TEST_MEDIUM_TOKEN!, //set token
-  directoryName: "How to manage Medium posts in Git as Markdown files", //select post
+  accessToken: process.env.TEST_MEDIUM_TOKEN!, // set token
+  folderName: "How to manage Medium posts in Git as Markdown files", // set folder name
   actionType: "create", // what to do
-  publishStatus: "draft", // how to set post
+  publishStatus: "draft",
 };
 
 switch (postCreationConfig.actionType) {
@@ -191,32 +180,31 @@ switch (postCreationConfig.actionType) {
 }
 ```
 
-postCreationConfig에 필요한 설정을 하고
+**postCreationConfig** setup, the token value is retrieved from `.env`, and you can perform both get and post actions on articles.
 
-Now, let's look at the main part.
-In this setup, the token value is retrieved from the environment (env), and you can perform both get and post actions on articles.
+Since **Medium** does not support update or delete operations, after some consideration, I concluded that the only way to modify an article is to publish it as a draft as many times as needed, and once satisfied with the changes, simply copy and paste the content.
 
-Once the article is written, the user only needs to modify the generateConfig and run it to execute the action.
+**mediumService**
 
-Since Medium does not support update or delete operations, after some consideration, I concluded that the only way to modify an article is to publish it as a draft as many times as needed, and once satisfied with the changes, simply copy and paste the content.
+Features to use for **Medium** posting
 
 ```typescript
-export const getMediumArticle = async (generateConfig: GenerateConfig) => {
+export const getMediumPost = async (generateConfig: PostCreationConfig) => {
   const userId = await getMediumUserId(generateConfig.accessToken);
-  await getArticle(userId, generateConfig);
+  await getPost(userId, generateConfig);
 };
 
-export const createMediumArticle = async (generateConfig: GenerateConfig) => {
+export const createMediumPost = async (generateConfig: PostCreationConfig) => {
   const userId = await getMediumUserId(generateConfig.accessToken);
-  const markdownArticle = await getMarkdownArticle(
-    generateConfig.directoryName
-  );
-  await createArticle(userId, markdownArticle, generateConfig);
+  const markdownPost = await getMarkdownPost(generateConfig.folderName);
+  await createPost(userId, markdownPost, generateConfig);
 };
 ```
 
+Retrieve user information from Medium using a integration token
+
 ```typescript
-// get user info from medium by token
+// Retrieve user information from Medium using a integration token
 const getMediumUserId = async (token: String): Promise<string> => {
   const userResponse: AxiosResponse = await axios.get(
     `${mediumApiBaseUrl}/me`,
@@ -231,12 +219,12 @@ const getMediumUserId = async (token: String): Promise<string> => {
 };
 ```
 
-get user post all
+get medium post
 
 ```typescript
-async function getArticle(
+async function getPost(
   userId: string,
-  generateConfig: GenerateConfig
+  generateConfig: PostCreationConfig
 ): Promise<void> {
   try {
     const response: AxiosResponse = await axios.get(
@@ -248,50 +236,48 @@ async function getArticle(
         },
       }
     );
-    console.log("Article got successfully:", response.data);
+    console.log("Post got successfully:", response.data);
   } catch (err: any) {
     console.error(
-      "Error getting article:",
+      "Error getting post:",
       err.response ? err.response.data : err.message
     );
   }
 }
 ```
 
-For creation, we first set the directoryName as shown below, and then call it as is.
-If you need more context or details added, feel free to let me know!
+Fetch the content of the article
 
 ```typescript
-const getMarkdownArticle = async (directoryName: string): Promise<string> => {
-  const path = `stories/${directoryName}/article.md`;
+const getMarkdownPost = async (folderName: string): Promise<string> => {
+  const path = `stories/${folderName}/post.md`;
   return await fs.readFile(path, "utf8");
 };
 ```
 
-You can output the read information as shown below.
+Posting a article to a **Medium**
 
 ```typescript
-async function createArticle(
+async function createPost(
   userId: string,
-  markdownArticle: string,
-  generateConfig: GenerateConfig
+  markdownPost: string,
+  generateConfig: PostCreationConfig
 ): Promise<void> {
   try {
     const contentFormat: string = "markdown";
-    const articleConfig: ArticleConfig = await import(
-      `../stories/${generateConfig.directoryName}/config.ts`
+    const postConfig: PostConfig = await import(
+      `../stories/${generateConfig.folderName}/config.ts`
     ).then((data) => {
       return data.default;
     });
-    //
     const response: AxiosResponse = await axios.post(
-      `${mediumApiBaseUrl}/users/${userId}/articles`,
+      `${mediumApiBaseUrl}/users/${userId}/posts`,
       {
-        title: articleConfig.title,
+        title: postConfig.title,
         contentFormat: contentFormat,
-        content: markdownArticle,
+        content: markdownPost,
         publishStatus: generateConfig.publishStatus,
-        tags: articleConfig.tags,
+        tags: postConfig.tags,
       },
       {
         headers: {
@@ -300,37 +286,36 @@ async function createArticle(
         },
       }
     );
-    console.log("Article created successfully:", response.data);
+    console.log("Post created successfully:", response.data);
   } catch (err: any) {
     console.error(
-      "Error creating article:",
+      "Error creating post:",
       err.response ? err.response.data : err.message
     );
   }
 }
 ```
 
-**other**
+## Digression
 
-1. To have a reference for myself later.
-2. To share knowledge in an easily understandable way.
+**Things to consider when writing a blog**
 
-There are several ways to make information easier to understand, but one challenge is that code highlighting doesn’t work natively on Medium. If I replace code with images, it becomes difficult to copy, and embedding something like **GitHub Gist** or **CodePen** makes the posting process more tedious. So, if code highlighting is necessary, readers can directly check the Git repository.
+- **For Future Reference :** I want to make sure the content can serve as a useful reference for myself later.
+- **Sharing Knowledge :** The goal is to share knowledge in a way that's easy for others to understand.
 
-**VSCode Extension**
+**Thoughts While Writing**
 
-I was trying to automatically add syntax highlighting for things like Node, Npm, Typescript and so on.
-There are too many keywords required. I wanted to manage the post files more easily.
-So, what I found as a compromise was a VSCode extension.
-There’s an extension called 'Markdown All in One', and getting familiar with it seems like it will improve efficiency moving forward.
-
-Once everything is ready, try organizing and publishing your post in Markdown. In my previous tech blog, I used to write directly on the platform, but using Markdown feels more 'developer-like' and professional, so I decided to stick with it.
+- I looked into Medium's code block settings to make information easier to read, but when generating posts via the SDK, syntax highlighting was not applied to code blocks.
+- I considered using **GitHub Gist** or **CodePen**, but it seemed inconvenient when writing the post. Instead, I opted for sharing a Git repository Url.
+- It was inconvenient to manually add syntax highlighting for Node.js, Npm, and TypeScript. I tried automating it, but there were just too many keywords involved. My compromise was using keyboard shortcuts to apply the highlighting with a VSCode extension.
+- In previous tech blogs, I wrote posts directly on the blog. However, moving forward, I want to adopt a more developer-friendly approach like the methods mentioned above.
 
 Feedback is always welcome.
 
-**Git Repository**
-[Medium Git Repository](https://github.com/yoru-choi/medium-stories-node/tree/dev)
-[This Post Git Repository](https://github.com/yoru-choi/medium-stories-node/blob/dev/stories/How%20to%20manage%20Medium%20posts%20in%20Git%20as%20Markdown%20files/post.md)
-**Reference**
-[Medium SDK for Node.js](https://github.com/Medium/medium-sdk-nodejs)
+**Reference**  
+[Medium SDK for Node.js](https://github.com/Medium/medium-sdk-nodejs)  
 [Medium API Docs](https://github.com/Medium/medium-api-docs)
+
+**Git Repository**  
+[Medium Git Repository](https://github.com/yoru-choi/medium-stories-node/tree/dev)  
+[This Post Git Repository](https://github.com/yoru-choi/medium-stories-node/blob/dev/stories/How%20to%20manage%20Medium%20posts%20in%20Git%20as%20Markdown%20files/post.md)

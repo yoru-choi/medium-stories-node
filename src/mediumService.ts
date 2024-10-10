@@ -4,7 +4,7 @@ import { PostCreationConfig, PostConfig } from "./interface";
 
 const mediumApiBaseUrl: string = "https://api.medium.com/v1";
 
-// get user info from medium by token
+// Retrieve user information from Medium using a integration token
 const getMediumUserId = async (token: String): Promise<string> => {
   const userResponse: AxiosResponse = await axios.get(
     `${mediumApiBaseUrl}/me`,
@@ -18,8 +18,8 @@ const getMediumUserId = async (token: String): Promise<string> => {
   return userResponse.data.data.id;
 };
 
-const getMarkdownPost = async (directoryName: string): Promise<string> => {
-  const path = `stories/${directoryName}/post.md`;
+const getMarkdownPost = async (folderName: string): Promise<string> => {
+  const path = `stories/${folderName}/post.md`;
   return await fs.readFile(path, "utf8");
 };
 
@@ -54,11 +54,10 @@ async function createPost(
   try {
     const contentFormat: string = "markdown";
     const postConfig: PostConfig = await import(
-      `../stories/${generateConfig.directoryName}/config.ts`
+      `../stories/${generateConfig.folderName}/config.ts`
     ).then((data) => {
       return data.default;
     });
-    // 글 게시 API 호출
     const response: AxiosResponse = await axios.post(
       `${mediumApiBaseUrl}/users/${userId}/posts`,
       {
@@ -91,7 +90,7 @@ export const getMediumPost = async (generateConfig: PostCreationConfig) => {
 
 export const createMediumPost = async (generateConfig: PostCreationConfig) => {
   const userId = await getMediumUserId(generateConfig.accessToken);
-  const markdownPost = await getMarkdownPost(generateConfig.directoryName);
+  const markdownPost = await getMarkdownPost(generateConfig.folderName);
   await createPost(userId, markdownPost, generateConfig);
 };
 
@@ -124,7 +123,7 @@ export const createMediumPost = async (generateConfig: PostCreationConfig) => {
 
 // export const updateMediumPost = async (generateConfig: GenerateConfig) => {
 //   const userId = await getMediumUserId(generateConfig.accessToken);
-//   const markdownPost = await getMarkdownPost(generateConfig.directoryName);
+//   const markdownPost = await getMarkdownPost(generateConfig.folderName);
 //   await updatePost(userId, markdownPost, generateConfig);
 // };
 
@@ -135,7 +134,7 @@ export const createMediumPost = async (generateConfig: PostCreationConfig) => {
 // ): Promise<void> {
 //   try {
 //     const postConfig: PostConfig = await import(
-//       `../stories/${generateConfig.directoryName}/config.ts`
+//       `../stories/${generateConfig.folderName}/config.ts`
 //     ).then((data) => {
 //       return data.default;
 //     });
@@ -167,7 +166,7 @@ export const createMediumPost = async (generateConfig: PostCreationConfig) => {
 // }
 
 // const postConfig: PostConfig = await import(
-//   `../stories/${generateConfig.directoryName}/config.ts`
+//   `../stories/${generateConfig.folderName}/config.ts`
 // ).then((data) => {
 //   return data.default;
 // });
