@@ -9,7 +9,7 @@ mongodb는 nosql db로 문서지향모델을 사용하여 json형식으로 데�
 유연한 스키마를 제공하기때문에 데이터의 구조변경이 쉽고
 자동샤딩을 통해 높은성능과 대용량 데이터 처리에 용이합니다
 
-Tech stack
+**Tech stack**
 kotlin 1.9
 spring 3.3
 intellij
@@ -26,8 +26,6 @@ mongorepository 디펜던시를 추가해줍니다
 실행테스팅을 해봅시다
 
 ```Kotlin
-
-
 
 ```
 
@@ -51,33 +49,13 @@ MongoTemplate은 MongoDB와의 상호작용을 위한 더 세밀한 API를 제�
 복잡한 쿼리 지원: Aggregation, 인덱스 관리 등 다양한 기능을 지원합니다.
 CRUD 외의 기능: 단순 CRUD 작업 이외에도 다양한 MongoDB 기능을 활용할 수 있습니다.
 
-## Examine
-
-kotlin 1.9x , springBoot 3.2x
-위의 스펙에 kotlin서버로 테스팅 하면서 진행을 해보겠습니다
-
-```kotin
-@Document(collection = MongoCollection.APP_COLLABORATOR)
-data class Booking(
-    @Id val id: ObjectId = ObjectId.get(),
-    @Field(MongoField.USER_ID) var userId: ObjectId,
-    @Field(MongoField.ORGANIZATION_COLLABORATOR_ID) var organizationCollaboratorId: ObjectId,
-    @Field(MongoField.APP_ID) var appId: ObjectId,
-    @Field(MongoField.APP_COLLABORATOR_ROLE) var role: AppCollaboratorRoles,
-
-    var user: User? = null
-)
-```
-
-## What is the mongoDb
-
 mongodb는 nosql db로 문서지향모델을 사용하여 json형식으로 데이터를 저장합니다 sdfㅇ
 유연한 스키마를 제공하기때문에 데이터의 구조변경이 쉽고
 자동샤딩을 통해 높은성능과 대용량 데이터 처리에 용이합니다
 
 ## mongoTemplate, mongoRepository 란
 
-mongo를 사용할때 주로 사용되는 2가지 방법입니다asdfasfdsdfsadfsdfasdfsdf
+mongo를 사용할때 주로 사용되는 2가지 방법입니다
 
 ### MongoRepository
 
@@ -101,36 +79,105 @@ CRUD 외의 기능: 단순 CRUD 작업 이외에도 다양한 MongoDB 기능을 
 
 ## Examine
 
-kotlin 1.9x , springBoot 3.2x
-위의 스펙에 kotlin서버로 테스팅 하면서 진행을 해보겠습니다
+먼저 최초 의 방식은 아래와 같습니다 아래처럼 id, collection을 정의해서 사용하는 것입니다
 
-```kotin
-@Document(collection = MongoCollection.APP_COLLABORATOR)
-data class Booking(
-    @Id val id: ObjectId = ObjectId.get(),
-    @Field(MongoField.USER_ID) var userId: ObjectId,
-    @Field(MongoField.ORGANIZATION_COLLABORATOR_ID) var organizationCollaboratorId: ObjectId,
-    @Field(MongoField.APP_ID) var appId: ObjectId,
-    @Field(MongoField.APP_COLLABORATOR_ROLE) var role: AppCollaboratorRoles,
-
-    var user: User? = null
-)
-```
-
-```kotin
-
-interface BookingRepository : MongoRepository<Booking, ObjectId>{
-    fun findAllById(id:ObjectId)
+```kotlin
+object MongoField {
+    const val ID = "_id"
+    const val STUDENT_ID = "student_id"
+    const val EXAM_GRADE_ID = "exam_grade_id"
+    const val NAME = "name"
+}
+object MongoCollection {
+    const val STUDENT = "student"
+    const val EXAM_GRADE = "exam_grade"
 }
 ```
 
-위와같이 기본적인 레포지토리식 사용법이다
-나는 mongo에 관련된 구조를 좀더 orm처럼 변수명을 사용하여 휴먼에러를 없에고 싶었다
-그래서 mongoEntity 클래스를 만들어 MongoField와MongoCollection를 object로서 선언하고 사용하였다
+그러면 document를 설정할때 아래처럼 사용할수있습니다
 
-위처럼 사용하면 문자열을 사용했을때의 모든 에러를 발생시키지않기때문에 좋다
+```kotlin
+@Document(collection = MongoCollection.STUDENT)
+data class Student(
+    @Id val id: ObjectId = ObjectId.get(),
+    @Field(MongoField.NAME) var name: String,
+    @Field(MongoField.EMAIL_ADDRESS) var emailAddress: String,
+    @Field(MongoField.IS_ACTIVATED) val isActivated: Boolean = true,
+    @Field(MongoField.CREATED_AT) var createdAt: LocalDateTime = LocalDateTime.now(),
 
-위처럼 기본적인 레포지토리를 했다면 이제 템플릿을 사용해본다
+    val examGrade: ExamGrade? = null
+)
+```
+
+위와같이 할경우 모든 String을 직접 입력하는것이 아닌 별도로 입력해놓은 값을 가져오기때문에 휴먼에러가 일어날 가능성이 줄어든다
+
+그리고 interface쪽으로 가면 일반적인 find의 경우 mongoRepositorty가 지원해주기때문에 문제가없다
+
+```kotlin
+interface StudentRepository : MongoRepository<Student, ObjectId>{
+}
+
+```
+
+`StudentRepository.findAll()`이런식으로 코드를 사용하면 아주 간편하다.
+하지만 mongo에서도 join을 해야할 가능성이 존재한다.
+
+그리고 이경우`@Annotation`을 지원해주고 이것을 사용할수있다
+하지만 이것은 함정과도 같다 이것을 쓰는순간 String의 늪에 빠지게될것이다
+link https://www.mongodb.com/ko-kr/docs/drivers/kotlin/coroutine/current/fundamentals/aggregation/
+
+그렇기 때문에 mongoTemplate을 사용하여 최대한 문자열 사용을 없에보려고 시도했다
+먼저 아래처럼 interface에 참조하는 방식을 사용하여 mongoTemplate을 사용한 클래스를 만든다
+그리고 확장함수 `snakeToCamel()`를 사용했다. 케이스를 바꿔주기때문에 ` val examGrade: ExamGrade? = null` 이곳에 자연스럽게 값을 넣을수있다.
+
+```kotlin
+
+@Repository
+class StudentAggregationRepositoryImpl : StudentAggregationRepository {
+    @Autowired
+    private lateinit var mongoTemplate: MongoTemplate
+
+    override fun findByStudentIdWithExamGrade(
+        studentId: ObjectId,
+    ): Optional<Student> {
+        val matchStage = Aggregation.match(
+            Criteria.where(MongoField.ID).`is`(studentId)
+        )
+        val lookupStage = Aggregation.lookup(
+            MongoCollection.EXAM_GRADE, // collection name
+            MongoField.ID, // localField
+            MongoField.STUDENT_ID, // foreignField
+            MongoCollection.EXAM_GRADE.snakeToCamel() // as
+        )
+        val unwindStage = Aggregation.unwind(MongoCollection.EXAM_GRADE.snakeToCamel(), true)
+        val aggregation = Aggregation.newAggregation(
+            matchStage,
+            lookupStage,
+            unwindStage
+        )
+        val aggregationResults: AggregationResults<Student> =
+            mongoTemplate.aggregate(
+                aggregation, MongoCollection.STUDENT, Student::class.java
+            )
+        return Optional.ofNullable(aggregationResults.mappedResults.firstOrNull())
+    }
+}
+
+```
+
+그리고 아래처럼 참조하면 동일한 방식인 `StudentRepository` 만 사용하는것으로 자연스럽게 aggregation을 사용하기때문에 별도의 선언이 필요가없어진다
+
+```kotlin
+interface StudentRepository : MongoRepository<Student, ObjectId>, StudentAggregationRepository {
+}
+
+interface StudentAggregationRepository {
+    fun findByStudentIdWithExamGrade(
+        studentId: ObjectId,
+    ): Optional<Student>
+}
+
+```
 
 mongo의 annotation을 하는경우에는 string을
 공식문서에는 변수형태로 나오지만 repository를 사용하는경우에 aggregation을 annotation형태로 사용한다면
