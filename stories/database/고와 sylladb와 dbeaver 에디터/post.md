@@ -23,9 +23,8 @@ sudo docker images
 docker ps
 
 pull한 nginx이미지를 사용하여 내 서버에서 run할 이미지 하나를 만들어준다
-sudo docker run --name mynginx -p 7070:70 -d nginx:latest
 
-docker run --name scylla -d -p 9042:9042 -p 9180:9180 -p 7199:7199 scylladb/scylla
+docker run --network=mynetwork --name scylla -d -p 9042:9042 -p 9180:9180 -p 7199:7199 scylladb/scylla
 
 위에 실행한다
 
