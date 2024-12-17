@@ -1,25 +1,33 @@
-에자일
+desktop docker 를 통해서 도커 사용법을 연마하자
+먼저 다운로드를 받아준다
 
-도커에서
+docer -v 로 버전나오면 문제없는거다
 
-아마존 리눅스 2023 에서 했다
-
-dnf install -y docker로 설치한다
-
-systecmctl start 랑 enable해준다
-
-udo docker search nginx
-nginx설치할수있는지 체크한다
-
+docker pull reids 로 테스트를 해본다
 docker pull nginx:latest
 
-sudo docker images로 pull했는지 체크한다
+왼쪽(안쪽)이 호스트 포트 외부접근하는 포트이고 오른쪽이 컨테이너 내부 포트이다.
+docker run -d -p 8080:8080 으로 하면 내부포트 외부포트가 8080이기때문에 8080으로 접근가능하다 -d는 디테치 분리하다 라는 뜻으로 백그라운드에 분리하여 실행하게 하기위한 태그 이다.
 
-pull한 nginx이미지를 사용하여 내 서버에서 run할 이미지 하나를 만들어준다
+아래 처럼 이름도 설정할수있다.
 sudo docker run --name mynginx -p 7070:70 -d nginx:latest
+
+pull을 했을경우 아래 명령어로 어떤 이미지를 가지고있는지 알수있다
+docker images
+
+실행하면 run중인거는 ps기능으로 실행 가능하다
+docker ps
+
+-d detach를 통해 로그를 못봤다면 아래 명령어를 통해 도커를 볼수도있다
+docker logs id
+docker logs -f id 는 follow모드여서 다시 계속 로그가 보이게함
 
 아래에서 내가 생성한 images의 설정 경로로 접근가능하다 여기서 nginx 설정을 조절하자
 sudo docker exec -it mynginx /bin/bash
+
+-it:
+-i: 명령어 실행 시 입력을 받을 수 있도록 표준 입력을 활성화합니다.
+-t: 가상 터미널을 연결하여 출력 결과를 보기 쉽게 표시합니다.
 
 nginx를 설치했으니
 
@@ -130,3 +138,33 @@ FROM node14
 COPY는 진짜 파일의 내용을 복사한다는거였다.
 
 해당 디렉토리에 해당위치에 카피해서 실행한다 이제야 도커를 조금 이해했다.
+
+docker 네트워크는 nginx의 역할과 비슷한듯 하다
+
+docker network create redis-cluster
+
+d는 백그라운드 --name은 이름설정 -net은 네트워크 설정
+
+-v는 볼륨 마운트 -> 내 로컬 파일을 docker의 redis에 적용
+첫번째 p는 외부 접근용 2번째 p는 노드끼리 내부 연결용
+마지막 redis 는 run할 주체이고 그뒤는 그 주체를 실행할 정보
+
+docker run -d --name redis-7002 --net redis-cluster -v C:\workSpace\projects\redis-cluster\7002\redis.conf:/usr/local/etc/redis/redis.conf -p 7002:7002 -p 17002:17002 redis:latest redis-server /usr/local/etc/redis/redis.conf
+
+도커 실행
+docker exec -it redis-7000 redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 --cluster-replicas 0
+
+exec: 실행 중인 컨테이너에서 명령어를 실행
+-it:
+-i: 명령어 실행 시 입력을 받을 수 있도록 표준 입력을 활성화합니다.
+-t: 가상 터미널을 연결하여 출력 결과를 보기 쉽게 표시합니다.
+redis-7000: 명령을 실행할 컨테이너 이름입니다. 여기서는 Redis 노드 중 하나인 redis-7000 컨테이너에서 명령을 실행합니다.
+
+실행 잘됬는지 확인
+docker exec -it redis-7000 redis-cli cluster nodes
+
+
+1. 기본적으로 이미지 컨테이너로 기본관리함
+2. 볼륨이라는 외부 저장소 하나를 만들고 마운트 하는것을 배움 -> 로그 파일같은거 이쪽에 뺄수도있음
+3. 그러면 이제 네트워크의 개념을 배움 하나의 네트워크에 연결하는용도로
+
