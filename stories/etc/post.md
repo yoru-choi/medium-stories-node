@@ -22,7 +22,7 @@ minikube start --deriver=hyperv
 
 virtualbox가안되어서 위에걸로 진행한다 아래걸 진행하면 쿠버네티스 현재상태를 대쉬보드로 확인할수있다
 왜 hyperv를 설정했고 그게 어떤영향을끼치는 지는 아직 더 해봐야알듯하다
-10 0000
+
 minikube status
 minikube dashboard
 
