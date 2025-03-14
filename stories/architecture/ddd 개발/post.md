@@ -1,3 +1,93 @@
+# Domain-Driven Design (DDD)
+
+Domain-Driven Design (DDD) is a software development methodology focused on understanding and effectively modeling complex domains. Also known as domain-driven design, it emphasizes designing and developing software by concentrating on the domain while minimizing its complexity.
+
+A domain refers to a set of important business concepts and rules. In DDD, the domain specifically refers to the business domain, which can be understood as a collection of related business operations. DDD focuses on these domains and structures software around domain models. In this post, we will explore the characteristics of DDD and its design approach.
+
+Domain Model
+A domain model represents the core concepts and rules of a domain as objects. While it conceptually represents the domain itself, the term "domain model" is also used to refer to the object model used when implementing the domain layer. It encapsulates business logic and is developed through collaboration with domain experts.
+
+Key Characteristics
+Understanding and effectively modeling complex domains for software design and development
+
+The goal is to enable domain experts and developers to share and collaborate on domain knowledge to build and maintain the domain model.
+Enhancing code readability and maintainability by clearly expressing business logic and important domain concepts
+
+The software should accurately reflect real business operations, minimizing complexity while effectively implementing domain logic.
+In essence, DDD focuses on the core domain and its functionalities, requiring a precise and well-structured domain model.
+
+Why "Domain-Driven" is Commonly Mentioned in MSA
+The term "domain-driven" is frequently discussed in Microservices Architecture (MSA) because MSA divides the system into domain-based services. This division helps achieve better fault tolerance and load balancing.
+
+Strategic Design
+Strategic Design is an approach for designing large-scale systems by dividing the overall system into multiple Bounded Contexts and defining their interactions.
+
+A Bounded Context defines the scope in which a domain model is applied. Each Bounded Context consists of one or more domain models, which are designed to express and solve business requirements within that specific context. They can be modeled, developed, and deployed independently.
+
+However, to ensure system-wide integration, Bounded Contexts must interact with each other through Context Mapping. Context Mapping is a technique that defines the boundaries and interactions between Bounded Contexts, utilizing specific patterns and agreements to integrate them effectively.
+
+In DDD terminology:
+
+Domain refers to the overall system design.
+SubDomain represents subsets of the domain.
+Bounded Context defines the contextual boundaries of these SubDomains.
+Strategic Design uses Context Mapping to define boundaries between Bounded Contexts and applies various patterns like Shared Kernel, Customer/Supplier, and Conformist to facilitate common model sharing.
+
+As a result, Strategic Design helps reduce system complexity, improve maintainability, and enhance collaboration between domain experts and developers. By accurately understanding and modeling business concepts, it ensures that the system aligns with real business requirements.
+
+actical Design in Domain-Driven Design (DDD)
+Tactical Design refers to the process of constructing a domain model within a Bounded Context in Domain-Driven Design (DDD). Within a Bounded Context, the domain model is specifically designed and implemented to address business requirements.
+
+This approach involves a large domain consisting of multiple subdomains, each with distinct characteristics, which are implemented as services.
+
+Tactical Design focuses on selecting and connecting the components of the main domain model. The key components include:
+
+Key Components of Tactical Design
+
+1. Layered Architecture
+   A software architecture pattern that divides a system into multiple layers.
+2. Value Object
+   An object that represents a value within the software model.
+   Unlike an entity, a Value Object does not have an identity but holds a state.
+   It must be immutable, often encapsulating domain logic such as unit conversion or formatting.
+3. Aggregate
+   A logical unit that groups related entities and value objects together.
+   It is accessed externally via the Aggregate Root, ensuring consistency and immutability within the aggregate.
+4. Entity
+   A domain object with a unique identity and mutable state.
+   Entities include business logic that enables state changes.
+   A typical example is a row in a database table.
+5. Service
+   A component that contains operations that do not naturally fit into domain objects.
+6. Factories
+   Classes or methods responsible for creating domain objects.
+7. Repositories
+   Components that provide an interface for storing, retrieving, and manipulating domain objects.
+8. Domain Service
+   A domain-level abstraction that encapsulates business logic.
+   Used when domain logic cannot be naturally assigned to a specific entity.
+   Typically defined as an interface, with its implementation used within the domain model.
+   Tactical Design in DDD
+   Tactical Design applies object-oriented programming principles and DDD techniques to build domain models that ensure consistency and maintainability.
+
+By accurately reflecting domain complexity and properly defining object responsibilities and relationships, Tactical Design helps create a model that effectively expresses business logic.
+
+It provides a concrete approach to implementing business requirements within a Bounded Context, ensuring that the domain model correctly represents business complexity while being understandable and maintainable.
+
+Together with Strategic Design, Tactical Design is one of the core principles of Domain-Driven Design (DDD) and plays a crucial role in effective software modeling. 🚀
+
+Soulution Space
+
+Entitiy
+
+- uuid this is have unique id
+- Value Object
+- status
+-
+
+Bounded Context
+Aggregate
+
 Domain-Driven Design (Domain-Driven Design)은 소프트웨어 개발 방법론 중 하나로, 복잡한 도메인을 이해하고 효과적으로 모델링하기 위해 사용되는 개발 철학과 방법입니다. 도메인 주도 설계라고도 부르는데, 도메인에 집중하며 도메인의 복잡성을 최소화하기 위해 소프트웨어를 설계하고 개발합니다.
 
 도메인이란 비즈니스에서 중요한 개념과 규칙들의 집합을 의미합니다. DDD에서의 Domain은 비지니스 Domain인데, 이는 유사한 업무의 집합이라고 할 수 있습니다. DDD는 이러한 도메인에 집중하며, 도메인 모델을 중심으로 소프트웨어를 설계합니다. 이번 포스팅에서는 DDD의 특징과 디자인 설계방식을 알아보겠습니다.

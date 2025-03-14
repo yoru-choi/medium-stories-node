@@ -71,7 +71,6 @@ fun createPlistByIpaData(
     return multipartFile
 }
 
-
 ```
 
 if you create this blabal.plist file you can save this file whenever
