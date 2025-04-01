@@ -163,8 +163,38 @@ redis-7000: 명령을 실행할 컨테이너 이름입니다. 여기서는 Redis
 실행 잘됬는지 확인
 docker exec -it redis-7000 redis-cli cluster nodes
 
-
 1. 기본적으로 이미지 컨테이너로 기본관리함
 2. 볼륨이라는 외부 저장소 하나를 만들고 마운트 하는것을 배움 -> 로그 파일같은거 이쪽에 뺄수도있음
 3. 그러면 이제 네트워크의 개념을 배움 하나의 네트워크에 연결하는용도로
 
+docker 로 배포하는 경우 자동화를 위해 dockerfile 과 docker-compose를 설정한다
+그리고 mongodb같은걸 사용하는경우 network를 하나로해야하나는데 이경우 localhost를 사용할수없다
+몽고와 go server는 다른 컨테이너로 가정할경우 localhost는 본인 컨테이너의 27017 을 바라보는게 기본으로 설정이되버린다
+
+그렇기때문에 network에 설정된 이름을 보고 그이름과 동일하게 localhost가 아닌 e.g) mongoDbUrl 이런거로 설정이 되있는경우 소스코드에서도
+그값을 사용해야한다
+그래야 별도의 컨테이너에서 값을 가져오려하기때문이다
+
+nginx는 이제 별도의 설정할게 없어서 필요가 없다고 판단했다
+
+mongodb 와 golang server를 실행하려고한다
+
+Dockerfile과 docker-compose.yml 파일이 필요했다
+DockerFile은 어떤 이미지를 빌드할지를 설정하는 파일이며 이 파일이 결국
+
+DockerFile은 어떤 이미지를 빌드할지를 설정하는 파일이며 이 파일이 이미지를 만듦
+
+docker-compose.yml 은 설정한 Dockerfile들을 가지고 네트워크 이런것도 설정해서 여러개의 컨테이너를 한번에 실행하거나 관리하는 설정이 가능
+
+즉 Dockerfile은 이미지 빌드
+
+docker-compose.yml은 실행관련 설정이라고 볼수있다
+
+.env 는 Makefile로 관리하면된다
+
+mongodb같은경우에는 localhost를 사용할수없기때문에 local이 아닌경우에는 그것에 맞는 설정이 별도로 필요할듯하다
+
+그리고 compose에서도 mongo를 같이 실행하기보단 몽고를 실행하는 코드는 별도로 준비하여 해당 네트워크안에서 실행되는것만 남겨도될듯하다
+안그러면 나중에 mongo쪽이 리빌드 되거나 무언가 변경사항이 생겼을때 내부 정보가 유실 될 가능성이있다
+
+이렇게 하면 docker에서 실행하는것은 문제가 없다
