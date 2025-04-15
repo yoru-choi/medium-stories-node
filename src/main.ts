@@ -8,7 +8,7 @@ dotenv.config();
 // TEST_MEDIUM_TOKEN, PROD_MEDIUM_TOKEN
 const postCreationConfig: PostCreationConfig = {
   accessToken: process.env.PROD_MEDIUM_TOKEN!, // set token
-  folderName: "How to manage Medium posts in Git as Markdown files", // set folder name
+  folderName: "Agile Scrum - A Simple Guide for Easy Learning", // set unique folder name
   actionType: "create", // what to do
   publishStatus: "draft",
 };

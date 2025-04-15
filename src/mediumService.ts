@@ -19,6 +19,7 @@ const getMediumUserId = async (token: String): Promise<string> => {
 };
 
 const getMarkdownPost = async (folderName: string): Promise<string> => {
+  // 폴더명을 넣으면 해당 폴더의 명의 경로를 찾은다음 아래에 넣고싶어
   const path = `stories/${folderName}/post.md`;
   return await fs.readFile(path, "utf8");
 };
