@@ -312,5 +312,20 @@ helm upgrade loki-stack grafana/loki-stack \
 
 그럼이제 다시 prometheus를 확인하자 pvc가없으니 재기동하면 정보날아갈수도있겠다고생각이든다
 kubectl get pods -n monitoring | grep prometheus
+러닝하고있으면이제 문제없이 사용할수있다
 
-4코어짜리 샀는데 생각보다 cpu가 힘이없다.. 지금 60퍼를 먹고있다고 생각했는데 처음 기동 문제였던거같다 점점 낮아진다 45퍼 평균치로 보인다
+초반에 진행했던 쿠버 대시보드도 이제 쓸데없이 ssh 로 떼우지말고 nodePort로 바꿔주자
+kubectl port-forward -n kubernetes-dashboard service/kubernetes-dashboard 8443:443
+위처럼 실행했었던부분을 svc를 확인하면clusterIp가 되있을것이다
+kubectl get svc -n kubernetes-dashboard
+helm은 쿠버의 패키지 관리 매니저이지만 쿠버대시보드는 helm없이 수동으로 설치된리소스이기때문에 수정도 수동으로해야한다
+kubectl -n kubernetes-dashboard edit svc kubernetes-dashboard
+위의 명령어를 실행하면 수정 파일의 vi가 나오기때문에 아래처럼 수정후 저장한다
+type: ClusterIP -> type: NodePort
+노드포트로 변경했다면 다시 svc를 확인하자 port가 새로 나왔을것이다
+그러면 토큰도 재발급해야할것이다
+
+4코어짜리 샀는데 생각보다 cpu가 힘이없다.. 지금 60퍼를 먹고있다고 생각했는데 처음 기동 문제였던거같다 점점 낮아진다 45에서 8.7로 내려왔다..
+다행이다 4코어 개쌉애바인줄알았다..
+
+걱정이 이만 저만
